@@ -1,0 +1,25 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "api-framework-tutorial",
+    "description": "Tutorial service",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/debug/clustermap/dump": {
+      "get": {
+        "summary": "Full Cluster Map Dump",
+        "description": "Return full key and value dump of cluster map",
+        "operationId": "API_V1_CLUSTER_MAP_SERVICE",
+        "responses": {
+          "200": {
+            "description": "Json contain cluster map",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
