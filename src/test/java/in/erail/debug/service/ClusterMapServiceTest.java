@@ -5,7 +5,6 @@ import in.erail.server.Server;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.Timeout;
@@ -33,19 +32,28 @@ public class ClusterMapServiceTest {
 
     server
             .getVertx()
-            .createHttpClient()
-            .get(server.getPort(), server.getHost(), "/v1/debug/clustermap/dump")
-            .putHeader("content-type", "application/json")
-            .putHeader(HttpHeaders.ORIGIN, "https://test.com")
-            .handler(response -> {
-              context.assertEquals(response.statusCode(), 200, response.statusMessage());
-              context.assertEquals(response.getHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN.toString()), "*");
-              response.bodyHandler((event) -> {
-                async.complete();
-              });
+            .sharedData()
+            .<String, String>rxGetClusterWideMap("dummayMap")
+            .flatMapCompletable((m) -> {
+              return m.rxPut("dummayKey", "dummayValue");
             })
-            .end();
-
+            .subscribe(() -> {
+              server
+                      .getVertx()
+                      .createHttpClient()
+                      .get(server.getPort(), server.getHost(), "/v1/debug/clustermap/dummayMap/dump")
+                      .putHeader("content-type", "application/json")
+                      .putHeader(HttpHeaders.ORIGIN, "https://test.com")
+                      .handler(response -> {
+                        context.assertEquals(response.statusCode(), 200, response.statusMessage());
+                        context.assertEquals(response.getHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN.toString()), "*");
+                        response.bodyHandler((event) -> {
+                          context.assertEquals("dummayValue", event.toJsonObject().getString("dummayKey"));
+                          async.complete();
+                        });
+                      })
+                      .end();
+            });
   }
 
 }

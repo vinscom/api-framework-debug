@@ -6,16 +6,31 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/debug/clustermap/dump": {
+    "/debug/clustermap/{mapName}/dump": {
       "get": {
-        "summary": "Full Cluster Map Dump",
-        "description": "Return full key and value dump of cluster map",
-        "operationId": "API_V1_CLUSTER_MAP_SERVICE",
+        "summary": "Dump of map",
+        "description": "Return dump of map",
+        "operationId": "API_V1_DEBUG_CLUSTER_MAP_SERVICE",
+        "parameters": [
+          {
+            "name": "mapName",
+            "in": "path",
+            "description": "Map name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Json contain cluster map",
+            "description": "JSON Dump of Map",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
