@@ -11,12 +11,56 @@
                 "summary": "Cluster Map Data Dump",
                 "description": "Cluster Map Data Dump",
                 "operationId": "API_V1_DEBUG_CLUSTER_MAP_SERVICE",
-                "parameters": [
-                    {
-                        "name": "mapName",
+                "parameters": [{
+                    "name": "mapName",
+                    "in": "query",
+                    "description": "Name of map",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Return map data dump",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/debug/redis/scan": {
+            "get": {
+                "summary": "Return Scanned Values",
+                "description": "Return Scanned Values",
+                "operationId": "API_V1_DEBUG_REDIS_SCAN_SERVICE",
+                "parameters": [{
+                        "name": "pattern",
                         "in": "query",
-                        "description": "Name of map",
-                        "required": true,
+                        "description": "Key Pattern",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "count",
+                        "in": "query",
+                        "description": "Number of result to return per request",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "description": "Cursor location",
                         "schema": {
                             "type": "string"
                         }
@@ -24,7 +68,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Return map data dump",
+                        "description": "Result",
                         "content": {
                             "application/json": {
                                 "schema": {
