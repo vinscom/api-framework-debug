@@ -20,7 +20,7 @@ public class ClusterMapService extends RESTServiceImpl {
 
     String mapName = pMessage
             .body()
-            .getJsonObject(FrameworkConstants.RoutingContext.Json.PATH_PARAM)
+            .getJsonObject(FrameworkConstants.RoutingContext.Json.QUERY_STRING_PARAM)
             .getString("mapName");
 
     getVertx()

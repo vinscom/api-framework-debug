@@ -1,40 +1,40 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "api-framework-tutorial",
-    "description": "Tutorial service",
-    "version": "1.0.0"
-  },
-  "paths": {
-    "/debug/clustermap/{mapName}/dump": {
-      "get": {
-        "summary": "Dump of map",
-        "description": "Return dump of map",
-        "operationId": "API_V1_DEBUG_CLUSTER_MAP_SERVICE",
-        "parameters": [
-          {
-            "name": "mapName",
-            "in": "path",
-            "description": "Map name",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "JSON Dump of Map",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
+    "openapi": "3.0.0",
+    "info": {
+        "title": "api-framework-tutorial",
+        "description": "Tutorial service",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/debug/clustermap/dump": {
+            "get": {
+                "summary": "Cluster Map Data Dump",
+                "description": "Cluster Map Data Dump",
+                "operationId": "API_V1_DEBUG_CLUSTER_MAP_SERVICE",
+                "parameters": [
+                    {
+                        "name": "mapName",
+                        "in": "query",
+                        "description": "Name of map",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return map data dump",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
         }
-      }
     }
-  }
 }
