@@ -12,14 +12,14 @@
                 "description": "Cluster Map Data Dump",
                 "operationId": "API_V1_DEBUG_CLUSTER_MAP_SERVICE",
                 "parameters": [{
-                    "name": "mapName",
-                    "in": "query",
-                    "description": "Name of map",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                }],
+                        "name": "mapName",
+                        "in": "query",
+                        "description": "Name of map",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }],
                 "responses": {
                     "200": {
                         "description": "Return map data dump",
@@ -61,6 +61,36 @@
                         "name": "cursor",
                         "in": "query",
                         "description": "Cursor location",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/debug/subscriber/top/{count}": {
+            "get": {
+                "summary": "Top subscribers",
+                "description": "Return top subscribers",
+                "operationId": "API_V1_DEBUG_TOP_SUBSCRIBER_SERVICE",
+                "parameters": [
+                    {
+                        "name": "count",
+                        "in": "path",
+                        "description": "Result count",
+                        "required": true,
                         "schema": {
                             "type": "string"
                         }
