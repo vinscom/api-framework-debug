@@ -13,7 +13,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.eventbus.Message;
 import io.vertx.reactivex.redis.RedisClient;
 import io.vertx.redis.op.ScanOptions;
-import java.util.PriorityQueue;
 
 /**
  *
