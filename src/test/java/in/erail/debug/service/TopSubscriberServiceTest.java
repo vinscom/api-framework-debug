@@ -45,13 +45,12 @@ public class TopSubscriberServiceTest {
     Async async = context.async();
     Server server = Glue.instance().resolve("/in/erail/server/Server");
     SecurityTools secTools = Glue.instance().resolve("/in/erail/security/SecurityTools");
-
+    SetOptions opt = new SetOptions().setEX(100);
+    
     Observable
-            .range(1, 10000)
+            .range(0, 10)
             .map(t -> Integer.toString(t))
             .flatMapSingle((t) -> {
-              SetOptions opt = new SetOptions();
-              opt.setEX(100);
               return redisClientInst
                       .getRedisClient()
                       .rxSetWithOptions(secTools.getGlobalUniqueString() + "testsubcriber" + t, t, opt);
@@ -60,7 +59,7 @@ public class TopSubscriberServiceTest {
               server
                       .getVertx()
                       .createHttpClient()
-                      .get(server.getPort(), server.getHost(), "/v1/debug/subscriber/top/2")
+                      .get(server.getPort(), server.getHost(), "/v1/debug/subscriber/top/10")
                       .putHeader("content-type", "application/json")
                       .putHeader(HttpHeaders.ORIGIN, "https://test.com")
                       .handler(response -> {
@@ -68,8 +67,7 @@ public class TopSubscriberServiceTest {
                         context.assertEquals(response.getHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN.toString()), "*");
                         response.bodyHandler((event) -> {
                           JsonArray result = event.toJsonArray();
-                          context.assertEquals(2, result.size());
-                          System.out.println(result.toString());
+                          context.assertEquals(9, result.size());
                           async.complete();
                         });
                       })

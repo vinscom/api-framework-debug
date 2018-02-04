@@ -16,13 +16,6 @@ NOTE: You should never use this module/api in production.
 | /debug/clustermap/dump?mapName=abc
 a| * **mapName **: Name of Map
 
-| Redis Scan Service
-| Provide Redis Scan Facility
-| /debug/redis/scan?match=ABC*&count=100&cursor=0
-a|  * **match** : Key Pattern
-    * **count** : Batch size to scan [Default : 10000]
-    * **cursor** : Cursor [Default : 0]
-
 | Top Subscribers
 | Provide most subscribed topics
 | /debug/subscriber/top/{count}

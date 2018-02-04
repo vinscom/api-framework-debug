@@ -1,11 +1,11 @@
 package in.erail.debug.service;
 
 import com.google.common.collect.MinMaxPriorityQueue;
-import com.google.common.collect.TreeMultimap;
 import com.google.common.primitives.Ints;
 import in.erail.common.FrameworkConstants;
 import in.erail.service.RESTServiceImpl;
 import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
 import io.vertx.core.json.JsonArray;
@@ -14,8 +14,6 @@ import io.vertx.reactivex.core.eventbus.Message;
 import io.vertx.reactivex.redis.RedisClient;
 import io.vertx.redis.op.ScanOptions;
 import java.util.PriorityQueue;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  *
@@ -48,13 +46,18 @@ public class TopSubscriberService extends RESTServiceImpl {
 
     Subject<String> cursors = BehaviorSubject.createDefault("0").toSerialized();
 
-    PriorityQueue<JsonArray> topSub = new PriorityQueue<JsonArray>((o1, o2) -> {
-      Long v1 = o1.getLong(1);
-      Long v2 = o2.getLong(1);
-      return v2.compareTo(v1);
-    });
+    MinMaxPriorityQueue<JsonArray> topSub
+            = MinMaxPriorityQueue
+                    .<JsonArray>orderedBy((o1, o2) -> {
+                      Long v1 = o1.getLong(1);
+                      Long v2 = o2.getLong(1);
+                      return v2.compareTo(v1);
+                    })
+                    .maximumSize(returnResultCount)
+                    .create();
 
     cursors
+            .subscribeOn(Schedulers.io())
             .concatMap(cursor -> {
               return getRedisClient()
                       .rxScan(cursor, scanOptions)
@@ -70,14 +73,15 @@ public class TopSubscriberService extends RESTServiceImpl {
               } else {
                 cursors.onComplete();
               }
-              
+
               return Observable.fromIterable(data);
             })
-            .flatMapSingle((key) -> {
+            .flatMapMaybe((key) -> {
               String k = (String) key;
 
               return getRedisClient()
                       .rxGet(k)
+                      .filter(v -> Integer.valueOf(v) > 0)
                       .map((v) -> {
                         return new JsonArray().add(k).add(Long.valueOf(v));
                       });
@@ -97,8 +101,8 @@ public class TopSubscriberService extends RESTServiceImpl {
             })
             .take(returnResultCount)
             .reduce(new JsonArray(), (acc, item) -> acc.add(item))
-            .subscribe((result) -> {
-              pMessage.reply(new JsonObject().put(FrameworkConstants.RoutingContext.Json.BODY, result));
+            .subscribe((body) -> {
+              pMessage.reply(new JsonObject().put(FrameworkConstants.RoutingContext.Json.BODY, body));
             });
 
   }

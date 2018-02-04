@@ -4,7 +4,6 @@ import in.erail.common.FrameworkConstants;
 import in.erail.service.RESTServiceImpl;
 import io.reactivex.Observable;
 import io.vertx.core.AsyncResult;
-import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.eventbus.Message;
 import java.util.Map;

@@ -34,52 +34,6 @@
                 }
             }
         },
-        "/debug/redis/scan": {
-            "get": {
-                "summary": "Return Scanned Values",
-                "description": "Return Scanned Values",
-                "operationId": "API_V1_DEBUG_REDIS_SCAN_SERVICE",
-                "parameters": [{
-                        "name": "match",
-                        "in": "query",
-                        "description": "Key Pattern",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "count",
-                        "in": "query",
-                        "description": "Number of result to return per request",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "cursor",
-                        "in": "query",
-                        "description": "Cursor location",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Result",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/debug/subscriber/top/{count}": {
             "get": {
                 "summary": "Top subscribers",
