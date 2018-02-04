@@ -40,7 +40,7 @@
                 "description": "Return Scanned Values",
                 "operationId": "API_V1_DEBUG_REDIS_SCAN_SERVICE",
                 "parameters": [{
-                        "name": "pattern",
+                        "name": "match",
                         "in": "query",
                         "description": "Key Pattern",
                         "required": false,
