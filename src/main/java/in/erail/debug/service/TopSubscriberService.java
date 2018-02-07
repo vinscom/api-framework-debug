@@ -5,6 +5,7 @@ import com.google.common.primitives.Ints;
 import in.erail.common.FrameworkConstants;
 import in.erail.service.RESTServiceImpl;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
@@ -13,6 +14,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.reactivex.core.eventbus.Message;
 import io.vertx.reactivex.redis.RedisClient;
 import io.vertx.redis.op.ScanOptions;
+import java.util.List;
 
 /**
  *
@@ -26,6 +28,7 @@ public class TopSubscriberService extends RESTServiceImpl {
   private String mGlobalUniqueString;
   private Integer mDefaultScanCount = 100000;
 
+  @SuppressWarnings("unchecked")
   @Override
   public void process(Message<JsonObject> pMessage) {
 
@@ -62,10 +65,10 @@ public class TopSubscriberService extends RESTServiceImpl {
                       .rxScan(cursor, scanOptions)
                       .toObservable();
             })
-            .flatMap((jsonArrayData) -> {
+            .flatMapSingle((jsonArrayData) -> {
 
               String next = jsonArrayData.getString(0);
-              JsonArray data = jsonArrayData.getJsonArray(1);
+              JsonArray keys = jsonArrayData.getJsonArray(1);
 
               if (!next.equals("0")) {
                 cursors.onNext(next);
@@ -73,16 +76,27 @@ public class TopSubscriberService extends RESTServiceImpl {
                 cursors.onComplete();
               }
 
-              return Observable.fromIterable(data);
+              return Single.<JsonArray>just(keys);
             })
-            .flatMapMaybe((key) -> {
-              String k = (String) key;
+            .flatMap((keys) -> {
+
+              if (keys.size() == 0) {
+                return Observable.<JsonArray>empty();
+              }
 
               return getRedisClient()
-                      .rxGet(k)
-                      .filter(v -> Integer.valueOf(v) > 0)
-                      .map((v) -> {
-                        return new JsonArray().add(k).add(Long.valueOf(v));
+                      .rxMgetMany((List<String>) keys.getList())
+                      .flatMapObservable((values) -> {
+                        return Observable.<JsonArray>create((e) -> {
+                          for (int i = 0; i < keys.size(); i++) {
+                            String value = values.getString(i);
+                            if (value == null || "0".equals(value)) {
+                              continue;
+                            }
+                            e.onNext(new JsonArray().add(keys.getString(i)).add(Long.valueOf(value)));
+                          }
+                          e.onComplete();
+                        });
                       });
             })
             .reduce(topSub, (acc, item) -> {
