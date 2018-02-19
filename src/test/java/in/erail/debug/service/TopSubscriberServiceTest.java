@@ -15,7 +15,7 @@ import in.erail.security.SecurityTools;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.reactivex.Observable;
 import io.vertx.core.json.JsonArray;
-import io.vertx.reactivex.redis.RedisClientInstance;
+import io.vertx.reactivex.redis.RedisClient;
 import io.vertx.redis.op.SetOptions;
 
 /**
@@ -36,8 +36,8 @@ public class TopSubscriberServiceTest {
   @Test
   public void testProcess(TestContext context) {
 
-    RedisClientInstance redisClientInst = Glue.instance().resolve("/io/vertx/redis/RedisClientInstance");
-    if (!redisClientInst.isEnable()) {
+    RedisClient redisClient = Glue.instance().resolve("/io/vertx/redis/RedisClient");
+    if (redisClient == null) {
       System.out.println("TopSubscriberServiceTest: Redis disabled. Skipping Test");
       return;
     }
@@ -51,8 +51,7 @@ public class TopSubscriberServiceTest {
             .range(0, 10)
             .map(t -> Integer.toString(t))
             .flatMapSingle((t) -> {
-              return redisClientInst
-                      .getRedisClient()
+              return redisClient
                       .rxSetWithOptions(secTools.getGlobalUniqueString() + "testsubcriber" + t, t, opt);
             })
             .doOnComplete(() -> {
