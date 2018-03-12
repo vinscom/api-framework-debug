@@ -12,14 +12,14 @@
                 "description": "Cluster Map Data Dump",
                 "operationId": "API_V1_DEBUG_CLUSTER_MAP_SERVICE",
                 "parameters": [{
-                        "name": "mapName",
-                        "in": "query",
-                        "description": "Name of map",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }],
+                    "name": "mapName",
+                    "in": "query",
+                    "description": "Name of map",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
                 "responses": {
                     "200": {
                         "description": "Return map data dump",
@@ -39,20 +39,46 @@
                 "summary": "Top subscribers",
                 "description": "Return top subscribers",
                 "operationId": "API_V1_DEBUG_TOP_SUBSCRIBER_SERVICE",
-                "parameters": [
-                    {
-                        "name": "count",
-                        "in": "path",
-                        "description": "Result count",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
+                "parameters": [{
+                    "name": "count",
+                    "in": "path",
+                    "description": "Result count",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
                     }
-                ],
+                }],
                 "responses": {
                     "200": {
                         "description": "Result",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/debug/glue/{gulePath}": {
+            "get": {
+                "summary": "Get Component Configuration",
+                "description": "Get Component Configuration",
+                "operationId": "API_V1_DEBUG_GLUE_BROWSER_SERVICE",
+                "parameters": [{
+                    "name": "gulePath",
+                    "in": "path",
+                    "description": "Return path information",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }],
+                "responses": {
+                    "200": {
+                        "description": "Return component configuration",
                         "content": {
                             "application/json": {
                                 "schema": {
