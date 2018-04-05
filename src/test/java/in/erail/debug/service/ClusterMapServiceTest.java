@@ -1,6 +1,7 @@
 package in.erail.debug.service;
 
 import com.google.common.net.HttpHeaders;
+import com.google.common.net.MediaType;
 import in.erail.server.Server;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,7 @@ public class ClusterMapServiceTest {
                       .getVertx()
                       .createHttpClient()
                       .get(server.getPort(), server.getHost(), "/v1/debug/clustermap/dump?mapName=dummayMap")
-                      .putHeader("content-type", "application/json")
+                      .putHeader(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString())
                       .putHeader(HttpHeaders.ORIGIN, "https://test.com")
                       .handler(response -> {
                         context.assertEquals(response.statusCode(), 200, response.statusMessage());
