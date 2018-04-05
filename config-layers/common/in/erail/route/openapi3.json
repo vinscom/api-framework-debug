@@ -62,13 +62,13 @@
                 }
             }
         },
-        "/debug/glue/{gulePath}": {
+        "/debug/glue*": {
             "get": {
                 "summary": "Get Component Configuration",
                 "description": "Get Component Configuration",
                 "operationId": "API_V1_DEBUG_GLUE_BROWSER_SERVICE",
                 "parameters": [{
-                    "name": "gulePath",
+                    "name": "/gulePath",
                     "in": "path",
                     "description": "Return path information",
                     "required": true,
