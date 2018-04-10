@@ -59,7 +59,7 @@ public class TopSubscriberServiceTest {
               server
                       .getVertx()
                       .createHttpClient()
-                      .get(server.getPort(), server.getHost(), "/v1/debug/subscriber/top/10")
+                      .get(server.getHttpServerOptions().getPort(), server.getHttpServerOptions().getHost(), "/v1/debug/subscriber/top/10")
                       .putHeader(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString())
                       .putHeader(HttpHeaders.ORIGIN, "https://test.com")
                       .handler(response -> {

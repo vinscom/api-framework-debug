@@ -42,7 +42,7 @@ public class ClusterMapServiceTest {
               server
                       .getVertx()
                       .createHttpClient()
-                      .get(server.getPort(), server.getHost(), "/v1/debug/clustermap/dump?mapName=dummayMap")
+                      .get(server.getHttpServerOptions().getPort(), server.getHttpServerOptions().getHost(), "/v1/debug/clustermap/dump?mapName=dummayMap")
                       .putHeader(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString())
                       .putHeader(HttpHeaders.ORIGIN, "https://test.com")
                       .handler(response -> {
