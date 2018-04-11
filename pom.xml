@@ -10,7 +10,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <api.framework.version>2.2-SNAPSHOT</api.framework.version>
-        <glue.version>2.2-SNAPSHOT</glue.version>
     </properties>
     <dependencies>
         <dependency>
