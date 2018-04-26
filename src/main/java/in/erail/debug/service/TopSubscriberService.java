@@ -1,6 +1,9 @@
 package in.erail.debug.service;
 
+import static in.erail.common.FrameworkConstants.RoutingContext.Json;
 import com.google.common.collect.MinMaxPriorityQueue;
+import com.google.common.net.HttpHeaders;
+import com.google.common.net.MediaType;
 import com.google.common.primitives.Ints;
 import in.erail.common.FrameworkConstants;
 import in.erail.service.RESTServiceImpl;
@@ -115,7 +118,10 @@ public class TopSubscriberService extends RESTServiceImpl {
             .take(returnResultCount)
             .reduce(new JsonArray(), (acc, item) -> acc.add(item))
             .subscribe((body) -> {
-              pMessage.reply(new JsonObject().put(FrameworkConstants.RoutingContext.Json.BODY, body));
+              JsonObject payload = new JsonObject();
+              payload.put(Json.BODY, body.toBuffer().getBytes());
+              payload.put(Json.HEADERS, new JsonObject().put(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString()));
+              pMessage.reply(payload);
             });
 
   }
