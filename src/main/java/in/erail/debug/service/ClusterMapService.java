@@ -1,6 +1,8 @@
 package in.erail.debug.service;
 
-import in.erail.common.FrameworkConstants;
+import static in.erail.common.FrameworkConstants.RoutingContext.Json;
+import com.google.common.net.HttpHeaders;
+import com.google.common.net.MediaType;
 import in.erail.service.RESTServiceImpl;
 import io.reactivex.Observable;
 import io.vertx.core.AsyncResult;
@@ -19,14 +21,14 @@ public class ClusterMapService extends RESTServiceImpl {
 
     String mapName = pMessage
             .body()
-            .getJsonObject(FrameworkConstants.RoutingContext.Json.QUERY_STRING_PARAM)
+            .getJsonObject(Json.QUERY_STRING_PARAM)
             .getString("mapName");
 
     getVertx()
             .sharedData()
             .<String, String>rxGetClusterWideMap(mapName)
             .flatMapObservable((m) -> {
-              return Observable.<Map.Entry<String,String>>create((e) -> {
+              return Observable.<Map.Entry<String, String>>create((e) -> {
                 m
                         .getDelegate()
                         .entries((Object k) -> {
@@ -41,14 +43,17 @@ public class ClusterMapService extends RESTServiceImpl {
                         });
               });
             })
-            .reduce(new JsonObject(), (s,entry) -> {
+            .reduce(new JsonObject(), (s, entry) -> {
               s.put(entry.getKey(), entry.getValue());
               return s;
             })
             .subscribe((result) -> {
-              pMessage.reply(new JsonObject().put(FrameworkConstants.RoutingContext.Json.BODY, result));
+              JsonObject payload = new JsonObject();
+              payload.put(Json.BODY, result.toBuffer().getBytes());
+              payload.put(Json.HEADERS, new JsonObject().put(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString()));
+              pMessage.reply(payload);
             });
-    
+
   }
 
 }
