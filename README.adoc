@@ -1,0 +1,23 @@
+:toc:
+
+= Debug API
+
+This project contains some common debug APIs, useful to understand system state.
+
+NOTE: You should never use this module/api in production.
+
+
+[%header]
+|====
+| Category | Description | URL | Param
+
+| Cluster Map Service
+| Provide all key value data of cluster map.
+| /debug/clustermap/dump?mapName=abc
+a| * **mapName **: Name of Map
+
+| Top Subscribers
+| Provide most subscribed topics
+| /debug/subscriber/top/{count}
+a| * **count** : Number of subscribers
+|====
