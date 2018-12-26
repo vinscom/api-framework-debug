@@ -1,13 +1,13 @@
 package in.erail.debug.service;
 
-import static in.erail.common.FrameworkConstants.RoutingContext.Json;
-import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
+import in.erail.model.RequestEvent;
+import in.erail.model.ResponseEvent;
 import in.erail.service.RESTServiceImpl;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.core.eventbus.Message;
 import java.util.Map;
 
 /**
@@ -16,15 +16,13 @@ import java.util.Map;
  */
 public class ClusterMapService extends RESTServiceImpl {
 
+  @SuppressWarnings("unchecked")
   @Override
-  public void process(Message<JsonObject> pMessage) {
+  public Maybe<ResponseEvent> process(RequestEvent pRequest) {
 
-    String mapName = pMessage
-            .body()
-            .getJsonObject(Json.QUERY_STRING_PARAM)
-            .getString("mapName");
+    String mapName = pRequest.getQueryStringParameters().get("mapName");
 
-    getVertx()
+    return getVertx()
             .sharedData()
             .<String, String>rxGetClusterWideMap(mapName)
             .flatMapObservable((m) -> {
@@ -47,13 +45,12 @@ public class ClusterMapService extends RESTServiceImpl {
               s.put(entry.getKey(), entry.getValue());
               return s;
             })
-            .subscribe((result) -> {
-              JsonObject payload = new JsonObject();
-              payload.put(Json.BODY, result.toBuffer().getBytes());
-              payload.put(Json.HEADERS, new JsonObject().put(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString()));
-              pMessage.reply(payload);
-            });
-
+            .map((result) -> {
+              return new ResponseEvent()
+                      .setBody(result.toBuffer().getBytes())
+                      .setContentType(MediaType.JSON_UTF_8);
+            })
+            .toMaybe();
   }
 
 }

@@ -34,6 +34,7 @@ public class TopSubscriberServiceTest {
    *
    * @param context
    */
+  @SuppressWarnings("deprecation")
   @Test
   public void testProcess(TestContext context) {
 
@@ -47,7 +48,7 @@ public class TopSubscriberServiceTest {
     Server server = Glue.instance().resolve("/in/erail/server/Server");
     SecurityTools secTools = Glue.instance().resolve("/in/erail/security/SecurityTools");
     SetOptions opt = new SetOptions().setEX(100);
-    
+
     Observable
             .range(0, 10)
             .map(t -> Integer.toString(t))

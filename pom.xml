@@ -9,7 +9,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <api.framework.version>2.4-SNAPSHOT</api.framework.version>
+        <api.framework.version>2.4.2</api.framework.version>
     </properties>
     <dependencies>
         <dependency>
@@ -26,13 +26,13 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
-            <version>1.3</version>
+            <version>2.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-unit</artifactId>
-            <version>3.5.1</version>
+            <version>3.6.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -41,7 +41,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.0</version>
+                <version>2.22.1</version>
                 <configuration>
                     <argLine>-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.Log4j2LogDelegateFactory -Dglue.layers=${settings.localRepository}/in/erail/api-framework/${api.framework.version}/api-framework-${api.framework.version}-common-config.zip,${project.basedir}/config-layers/common,${project.basedir}/config-layers/test</argLine>
                 </configuration>

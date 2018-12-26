@@ -1,23 +1,23 @@
 package in.erail.debug.service;
 
-import static in.erail.common.FrameworkConstants.RoutingContext.Json;
+import java.util.List;
+
 import com.google.common.collect.MinMaxPriorityQueue;
-import com.google.common.net.HttpHeaders;
 import com.google.common.net.MediaType;
 import com.google.common.primitives.Ints;
-import in.erail.common.FrameworkConstants;
+
+import in.erail.model.RequestEvent;
+import in.erail.model.ResponseEvent;
 import in.erail.service.RESTServiceImpl;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
 import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.reactivex.core.eventbus.Message;
 import io.vertx.reactivex.redis.RedisClient;
 import io.vertx.redis.op.ScanOptions;
-import java.util.List;
 
 /**
  *
@@ -33,13 +33,9 @@ public class TopSubscriberService extends RESTServiceImpl {
 
   @SuppressWarnings("unchecked")
   @Override
-  public void process(Message<JsonObject> pMessage) {
+  public Maybe<ResponseEvent> process(RequestEvent pRequest) {
 
-    JsonObject pathParam = pMessage
-            .body()
-            .getJsonObject(FrameworkConstants.RoutingContext.Json.PATH_PARAM);
-
-    Integer returnResultCount = Ints.tryParse(pathParam.getString(getScanCountParamName()));
+    Integer returnResultCount = Ints.tryParse(pRequest.getPathParameters().get(getScanCountParamName()));
 
     if (returnResultCount == null) {
       returnResultCount = getDefaultReturnResultCount();
@@ -61,7 +57,7 @@ public class TopSubscriberService extends RESTServiceImpl {
                     .maximumSize(returnResultCount)
                     .create();
 
-    cursors
+    return cursors
             .subscribeOn(Schedulers.io())
             .concatMap(cursor -> {
               return getRedisClient()
@@ -117,12 +113,10 @@ public class TopSubscriberService extends RESTServiceImpl {
             })
             .take(returnResultCount)
             .reduce(new JsonArray(), (acc, item) -> acc.add(item))
-            .subscribe((body) -> {
-              JsonObject payload = new JsonObject();
-              payload.put(Json.BODY, body.toBuffer().getBytes());
-              payload.put(Json.HEADERS, new JsonObject().put(HttpHeaders.CONTENT_TYPE, MediaType.JSON_UTF_8.toString()));
-              pMessage.reply(payload);
-            });
+            .map((t) -> {
+              return new ResponseEvent().setBody(t.toBuffer().getBytes()).setContentType(MediaType.JSON_UTF_8);
+            })
+            .toMaybe();
 
   }
 
