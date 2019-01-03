@@ -48,7 +48,7 @@ public class ClusterMapService extends RESTServiceImpl {
             .map((result) -> {
               return new ResponseEvent()
                       .setBody(result.toBuffer().getBytes())
-                      .setContentType(MediaType.JSON_UTF_8);
+                      .setMediaType(MediaType.JSON_UTF_8);
             })
             .toMaybe();
   }
