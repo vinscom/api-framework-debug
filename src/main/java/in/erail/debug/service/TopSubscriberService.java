@@ -114,7 +114,7 @@ public class TopSubscriberService extends RESTServiceImpl {
             .take(returnResultCount)
             .reduce(new JsonArray(), (acc, item) -> acc.add(item))
             .map((t) -> {
-              return new ResponseEvent().setBody(t.toBuffer().getBytes()).setContentType(MediaType.JSON_UTF_8);
+              return new ResponseEvent().setBody(t.toBuffer().getBytes()).setMediaType(MediaType.JSON_UTF_8);
             })
             .toMaybe();
 
