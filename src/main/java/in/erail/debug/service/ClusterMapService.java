@@ -1,10 +1,10 @@
 package in.erail.debug.service;
 
 import com.google.common.net.MediaType;
-import in.erail.model.RequestEvent;
-import in.erail.model.ResponseEvent;
+import in.erail.model.Event;
 import in.erail.service.RESTServiceImpl;
 import io.reactivex.Maybe;
+import io.reactivex.MaybeSource;
 import io.reactivex.Observable;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.json.JsonObject;
@@ -16,11 +16,14 @@ import java.util.Map;
  */
 public class ClusterMapService extends RESTServiceImpl {
 
-  @SuppressWarnings("unchecked")
   @Override
-  public Maybe<ResponseEvent> process(RequestEvent pRequest) {
+  public MaybeSource<Event> process(Maybe<Event> pEvent) {
+    return pEvent.flatMap(this::handle);
+  }
 
-    String mapName = pRequest.getQueryStringParameters().get("mapName");
+  public Maybe<Event> handle(Event pEvent) {
+
+    String mapName = pEvent.getRequest().getQueryStringParameters().get("mapName");
 
     return getVertx()
             .sharedData()
@@ -45,11 +48,12 @@ public class ClusterMapService extends RESTServiceImpl {
               s.put(entry.getKey(), entry.getValue());
               return s;
             })
-            .map((result) -> {
-              return new ResponseEvent()
+            .doOnSuccess((result) -> {
+              pEvent.getResponse()
                       .setBody(result.toBuffer().getBytes())
                       .setMediaType(MediaType.JSON_UTF_8);
             })
+            .map(t -> pEvent)
             .toMaybe();
   }
 

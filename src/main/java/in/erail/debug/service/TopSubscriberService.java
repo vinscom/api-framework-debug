@@ -5,11 +5,11 @@ import java.util.List;
 import com.google.common.collect.MinMaxPriorityQueue;
 import com.google.common.net.MediaType;
 import com.google.common.primitives.Ints;
+import in.erail.model.Event;
 
-import in.erail.model.RequestEvent;
-import in.erail.model.ResponseEvent;
 import in.erail.service.RESTServiceImpl;
 import io.reactivex.Maybe;
+import io.reactivex.MaybeSource;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
@@ -31,11 +31,14 @@ public class TopSubscriberService extends RESTServiceImpl {
   private String mGlobalUniqueString;
   private Integer mDefaultScanCount = 100000;
 
-  @SuppressWarnings("unchecked")
   @Override
-  public Maybe<ResponseEvent> process(RequestEvent pRequest) {
+  public MaybeSource<Event> process(Maybe<Event> pEvent) {
+    return pEvent.flatMap(this::handle);
+  }
 
-    Integer returnResultCount = Ints.tryParse(pRequest.getPathParameters().get(getScanCountParamName()));
+  public Maybe<Event> handle(Event pEvent) {
+
+    Integer returnResultCount = Ints.tryParse(pEvent.getRequest().getPathParameters().get(getScanCountParamName()));
 
     if (returnResultCount == null) {
       returnResultCount = getDefaultReturnResultCount();
@@ -113,9 +116,10 @@ public class TopSubscriberService extends RESTServiceImpl {
             })
             .take(returnResultCount)
             .reduce(new JsonArray(), (acc, item) -> acc.add(item))
-            .map((t) -> {
-              return new ResponseEvent().setBody(t.toBuffer().getBytes()).setMediaType(MediaType.JSON_UTF_8);
+            .doOnSuccess((t) -> {
+              pEvent.getResponse().setBody(t.toBuffer().getBytes()).setMediaType(MediaType.JSON_UTF_8);
             })
+            .map(t -> pEvent)
             .toMaybe();
 
   }
