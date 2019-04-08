@@ -43,7 +43,7 @@ public class ClusterMapServiceTest {
             .doOnSuccess(response -> assertEquals(response.statusCode(), 200, response.statusMessage()))
             .doOnSuccess(response -> assertEquals(response.getHeader(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN.toString()), "*"))
             .doOnSuccess(response -> assertEquals("dummayValue", response.bodyAsJsonObject().getString("dummayKey")))
-            .subscribe(t -> testContext.completeNow(), err -> testContext.failNow(err));;
+            .subscribe(t -> testContext.completeNow(), err -> testContext.failNow(err));
   }
 
 }
