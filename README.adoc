@@ -21,3 +21,15 @@ a| * **mapName **: Name of Map
 | /debug/subscriber/top/{count}
 a| * **count** : Number of subscribers
 |====
+
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=bugs[Status]
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=code_smells[Status]
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=coverage[Status]
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=duplicated_lines_density[Status]
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=ncloc[Status]
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=sqale_rating[Status]
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=alert_status[Status]
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=reliability_rating[Status]
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=security_rating[Status]
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=sqale_index[Status]
+image::https://sonarcloud.io/api/project_badges/measure?project=vinscom_api-framework-debug&metric=vulnerabilities[Status]
