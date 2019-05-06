@@ -38,6 +38,7 @@ public class TopSubscriberServiceTest {
     RedisClient redisClient = Glue.instance().resolve("/io/vertx/redis/RedisClient");
     if (redisClient == null) {
       System.out.println("TopSubscriberServiceTest: Redis disabled. Skipping Test");
+      testContext.completeNow();
       return;
     }
 
